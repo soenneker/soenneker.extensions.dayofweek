@@ -10,50 +10,55 @@ namespace Soenneker.Extensions.DayOfWeek;
 public static class DayOfWeekExtension
 {
     /// <summary>
-    /// Converts the specified day of the week to its corresponding single-character abbreviation.
+    /// Converts the specified nullable day of week value to its corresponding single-character representation.
     /// </summary>
-    /// <remarks>If <paramref name="day"/> is Thursday or Tuesday, the method returns 'T'. If it is Saturday
-    /// or Sunday, the method returns 'S'.</remarks>
-    /// <param name="day">The day of the week to convert. Must be a valid instance of <see cref="DayOfWeekType"/>.</param>
-    /// <returns>A character representing the specified day: 'M' for Monday, 'T' for Tuesday or Thursday, 'W' for Wednesday, 'F'
-    /// for Friday, and 'S' for Saturday or Sunday. Returns '\0' if <paramref name="day"/> does not match a known day.</returns>
+    /// <remarks>If the provided value does not correspond to a recognized day of the week, the method returns
+    /// the null character ('\0'). This method is intended for scenarios where a compact, single-character
+    /// representation of a day is required.</remarks>
+    /// <param name="day">The nullable day of week value to convert. If null, the method returns the null character ('\0').</param>
+    /// <returns>A character representing the specified day of the week. Returns 'M' for Monday, 'T' for Tuesday or Thursday, 'W'
+    /// for Wednesday, 'F' for Friday, 'S' for Saturday or Sunday, or '\0' if the value is null or unrecognized.</returns>
     [Pure, MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static char ToChar(this DayOfWeekType day)
+    public static char ToChar(this DayOfWeekType? day)
     {
-        if (ReferenceEquals(day, DayOfWeekType.Monday))
-            return 'M';
+        if (day is null)
+            return '\0';
 
-        if (ReferenceEquals(day, DayOfWeekType.Tuesday))
-            return 'T';
-
-        if (ReferenceEquals(day, DayOfWeekType.Wednesday))
-
-            return 'W';
-        if (ReferenceEquals(day, DayOfWeekType.Thursday))
-
-            return 'T';
-        if (ReferenceEquals(day, DayOfWeekType.Friday))
-            return 'F';
-
-        if (ReferenceEquals(day, DayOfWeekType.Saturday))
-            return 'S';
-
-        if (ReferenceEquals(day, DayOfWeekType.Sunday))
-            return 'S';
-
-        return '\0';
+        return day.Value switch
+        {
+            DayOfWeekType.MondayValue => 'M',
+            DayOfWeekType.TuesdayValue => 'T',
+            DayOfWeekType.WednesdayValue => 'W',
+            DayOfWeekType.ThursdayValue => 'T',
+            DayOfWeekType.FridayValue => 'F',
+            DayOfWeekType.SaturdayValue => 'S',
+            DayOfWeekType.SundayValue => 'S',
+            _ => '\0'
+        };
     }
 
     /// <summary>
-    /// Converts the specified day of the week to its corresponding single-letter abbreviation.
+    /// Returns the single-letter abbreviation corresponding to the specified day of the week.
     /// </summary>
-    /// <param name="day">The day of the week to convert to a single-letter abbreviation.</param>
-    /// <returns>A string containing the single-letter abbreviation for the specified day of the week, or an empty string if the
-    /// day does not have a corresponding letter.</returns>
+    /// <remarks>Monday is represented as "M", Tuesday and Thursday as "T", Wednesday as "W", Friday as "F",
+    /// and Saturday and Sunday as "S".</remarks>
+    /// <param name="day">The day of the week to convert to a single-letter abbreviation, or null.</param>
+    /// <returns>A string containing the single-letter abbreviation for the specified day of the week. Returns an empty string if
+    /// <paramref name="day"/> is null or does not represent a valid day.</returns>
     [Pure, MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string ToLetter(this DayOfWeekType day)
+    public static string ToLetter(this DayOfWeekType? day)
     {
-        char c = day.ToChar();
-        return c == '\0' ? string.Empty : c.ToString();
+        // Avoid allocating via c.ToString() by returning cached single-char strings.
+        return day?.Value switch
+        {
+            DayOfWeekType.MondayValue => "M",
+            DayOfWeekType.TuesdayValue => "T",
+            DayOfWeekType.WednesdayValue => "W",
+            DayOfWeekType.ThursdayValue => "T",
+            DayOfWeekType.FridayValue => "F",
+            DayOfWeekType.SaturdayValue => "S",
+            DayOfWeekType.SundayValue => "S",
+            _ => string.Empty
+        };
     }
 }
