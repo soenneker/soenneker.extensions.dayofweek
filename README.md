@@ -4,7 +4,8 @@
 [![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.extensions.dayofweek/codeql.yml?label=CodeQL&style=for-the-badge)](https://github.com/soenneker/soenneker.extensions.dayofweek/actions/workflows/codeql.yml)
 
 # ![](https://user-images.githubusercontent.com/4441470/224455560-91ed3ee7-f510-4041-a8d2-3fc093025112.png) Soenneker.Extensions.DayOfWeek
-A collection of helpful DayOfWeek enum extension methods.
+
+Compact one-character representations for `DayOfWeekType` values.
 
 ## Installation
 
@@ -12,16 +13,30 @@ A collection of helpful DayOfWeek enum extension methods.
 dotnet add package Soenneker.Extensions.DayOfWeek
 ```
 
-## Quick start
+## Usage
 
 ```csharp
+using Soenneker.Enums.DayOfWeek;
 using Soenneker.Extensions.DayOfWeek;
 
-// Given an existing DayOfWeekType? named day:
-var result = day.ToChar();
+char monday = DayOfWeekType.Monday.ToChar();    // 'M'
+string friday = DayOfWeekType.Friday.ToLetter(); // "F"
+
+DayOfWeekType? missing = null;
+char missingChar = missing.ToChar();       // '\0'
+string missingLetter = missing.ToLetter(); // ""
 ```
 
-## Common operations
+The mapping is:
 
-- `ToChar()` - Converts the specified nullable day of week value to its corresponding single-character representation. If the provided value does not correspond to a recognized day of the week, the method returns the null character ('\0').
-- `ToLetter()` - Returns the single-letter abbreviation corresponding to the specified day of the week.
+| Day | Result |
+| --- | --- |
+| Monday | `M` |
+| Tuesday | `T` |
+| Wednesday | `W` |
+| Thursday | `T` |
+| Friday | `F` |
+| Saturday | `S` |
+| Sunday | `S` |
+
+`ToChar()` returns the null character for a null or unrecognized value. `ToLetter()` returns an empty string. The abbreviations are intentionally compact rather than unique: Tuesday and Thursday collide, as do Saturday and Sunday, so they should not be used as identifiers or for round-trip parsing.
